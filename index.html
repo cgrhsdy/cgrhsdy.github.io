@@ -154,6 +154,82 @@
   </header>
 
   <main>
+  <!-- 四角鎏金云纹：position:fixed，不随页面滚动移动；
+       画在 main 背景之上、正文之下（z-index:-1），所以不会挡字 -->
+  <div class="corners" aria-hidden="true">
+<div class="corner"><svg viewBox="0 0 280 280" aria-hidden="true">
+<defs><linearGradient id="gilt1" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fbeec4"/><stop offset="28%" stop-color="#e8cd7d"/>
+<stop offset="55%" stop-color="#c39a35"/><stop offset="78%" stop-color="#f6e4ab"/>
+<stop offset="100%" stop-color="#d8b45c"/></linearGradient></defs>
+<g fill="none" stroke="url(#gilt1)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 142 88 A 47.25 47.25 0 0 1 47.5 88 A 33.75 33.75 0 0 1 115 88 A 20.25 20.25 0 0 1 74.5 88 A 6.75 6.75 0 0 1 88 88"/>
+<path d="M 193 46 A 17.5 17.5 0 0 1 228 46 A 10.5 10.5 0 0 1 207 46 A 3.5 3.5 0 0 1 214 46"/>
+<path d="M 46 235 A 17.5 17.5 0 0 1 46 200 A 10.5 10.5 0 0 1 46 221 A 3.5 3.5 0 0 1 46 214"/>
+<path d="M 2 146 C 2 66 66 2 146 2"/>
+<path d="M 142 96 Q 196 84 226 44"/>
+<path d="M 96 142 Q 84 196 44 226"/>
+</g>
+<g fill="url(#gilt1)">
+<circle cx="152" cy="88" r="3.4"/><circle cx="88" cy="152" r="3.4"/>
+<circle cx="203" cy="34" r="2.8"/><circle cx="34" cy="203" r="2.8"/>
+<circle cx="52" cy="52" r="4.6"/>
+</g>
+</svg></div><div class="corner"><svg viewBox="0 0 280 280" aria-hidden="true">
+<defs><linearGradient id="gilt2" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fbeec4"/><stop offset="28%" stop-color="#e8cd7d"/>
+<stop offset="55%" stop-color="#c39a35"/><stop offset="78%" stop-color="#f6e4ab"/>
+<stop offset="100%" stop-color="#d8b45c"/></linearGradient></defs>
+<g fill="none" stroke="url(#gilt2)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 142 88 A 47.25 47.25 0 0 1 47.5 88 A 33.75 33.75 0 0 1 115 88 A 20.25 20.25 0 0 1 74.5 88 A 6.75 6.75 0 0 1 88 88"/>
+<path d="M 193 46 A 17.5 17.5 0 0 1 228 46 A 10.5 10.5 0 0 1 207 46 A 3.5 3.5 0 0 1 214 46"/>
+<path d="M 46 235 A 17.5 17.5 0 0 1 46 200 A 10.5 10.5 0 0 1 46 221 A 3.5 3.5 0 0 1 46 214"/>
+<path d="M 2 146 C 2 66 66 2 146 2"/>
+<path d="M 142 96 Q 196 84 226 44"/>
+<path d="M 96 142 Q 84 196 44 226"/>
+</g>
+<g fill="url(#gilt2)">
+<circle cx="152" cy="88" r="3.4"/><circle cx="88" cy="152" r="3.4"/>
+<circle cx="203" cy="34" r="2.8"/><circle cx="34" cy="203" r="2.8"/>
+<circle cx="52" cy="52" r="4.6"/>
+</g>
+</svg></div><div class="corner"><svg viewBox="0 0 280 280" aria-hidden="true">
+<defs><linearGradient id="gilt3" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fbeec4"/><stop offset="28%" stop-color="#e8cd7d"/>
+<stop offset="55%" stop-color="#c39a35"/><stop offset="78%" stop-color="#f6e4ab"/>
+<stop offset="100%" stop-color="#d8b45c"/></linearGradient></defs>
+<g fill="none" stroke="url(#gilt3)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 142 88 A 47.25 47.25 0 0 1 47.5 88 A 33.75 33.75 0 0 1 115 88 A 20.25 20.25 0 0 1 74.5 88 A 6.75 6.75 0 0 1 88 88"/>
+<path d="M 193 46 A 17.5 17.5 0 0 1 228 46 A 10.5 10.5 0 0 1 207 46 A 3.5 3.5 0 0 1 214 46"/>
+<path d="M 46 235 A 17.5 17.5 0 0 1 46 200 A 10.5 10.5 0 0 1 46 221 A 3.5 3.5 0 0 1 46 214"/>
+<path d="M 2 146 C 2 66 66 2 146 2"/>
+<path d="M 142 96 Q 196 84 226 44"/>
+<path d="M 96 142 Q 84 196 44 226"/>
+</g>
+<g fill="url(#gilt3)">
+<circle cx="152" cy="88" r="3.4"/><circle cx="88" cy="152" r="3.4"/>
+<circle cx="203" cy="34" r="2.8"/><circle cx="34" cy="203" r="2.8"/>
+<circle cx="52" cy="52" r="4.6"/>
+</g>
+</svg></div><div class="corner"><svg viewBox="0 0 280 280" aria-hidden="true">
+<defs><linearGradient id="gilt4" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#fbeec4"/><stop offset="28%" stop-color="#e8cd7d"/>
+<stop offset="55%" stop-color="#c39a35"/><stop offset="78%" stop-color="#f6e4ab"/>
+<stop offset="100%" stop-color="#d8b45c"/></linearGradient></defs>
+<g fill="none" stroke="url(#gilt4)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 142 88 A 47.25 47.25 0 0 1 47.5 88 A 33.75 33.75 0 0 1 115 88 A 20.25 20.25 0 0 1 74.5 88 A 6.75 6.75 0 0 1 88 88"/>
+<path d="M 193 46 A 17.5 17.5 0 0 1 228 46 A 10.5 10.5 0 0 1 207 46 A 3.5 3.5 0 0 1 214 46"/>
+<path d="M 46 235 A 17.5 17.5 0 0 1 46 200 A 10.5 10.5 0 0 1 46 221 A 3.5 3.5 0 0 1 46 214"/>
+<path d="M 2 146 C 2 66 66 2 146 2"/>
+<path d="M 142 96 Q 196 84 226 44"/>
+<path d="M 96 142 Q 84 196 44 226"/>
+</g>
+<g fill="url(#gilt4)">
+<circle cx="152" cy="88" r="3.4"/><circle cx="88" cy="152" r="3.4"/>
+<circle cx="203" cy="34" r="2.8"/><circle cx="34" cy="203" r="2.8"/>
+<circle cx="52" cy="52" r="4.6"/>
+</g>
+</svg></div>  </div>
 
     <!-- 01 关于我 -->
     <section class="sec" id="about">

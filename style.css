@@ -417,23 +417,34 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   background-size:220% 100%;
   -webkit-background-clip:text;background-clip:text;
   color:transparent;-webkit-text-fill-color:transparent;
-  animation:sheen 9s ease-in-out infinite;
+  /* 底色不参与动画：名字本体是静态暗金，只有下面那道亮光在走，
+     这样"四个字依次亮起"才看得清楚，不会两种动效互相干扰。 */
 }
 .hero-name::before,.entry-id::before{
   content:attr(data-text);
   position:absolute;top:0;left:50%;
   transform:translateX(-50%) scale(1.07);
   white-space:nowrap;z-index:-1;
-  background:conic-gradient(from var(--flow),
-    rgba(255,244,205,0)    0deg,
-    rgba(255,244,205,0)  290deg,
-    rgba(255,238,180,.85) 332deg,
-    rgba(255,255,242,1)   350deg,
-    rgba(255,238,180,.85) 360deg);
+  /* 一道横向亮带，宽度约等于一个字。
+     波形图 280% 宽，靠 background-position 把它从右往左推过去，
+     于是「初 → 阳 → 零 → 三」依次被点亮。
+     15%→85% 这个区间让亮带刚好从右侧进、左侧出，循环之间几乎不留空档。 */
+  background:linear-gradient(100deg,
+    rgba(255,244,205,0)    40%,
+    rgba(255,240,190,.45)  46%,
+    rgba(255,255,246,1)    50%,
+    rgba(255,240,190,.45)  54%,
+    rgba(255,244,205,0)    60%);
+  background-size:280% 100%;
+  background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   color:transparent;-webkit-text-fill-color:transparent;
   filter:blur(1.5px);
-  animation:flowSpin 4.5s linear infinite;
+  animation:nameSweep 5s linear infinite;
+}
+@keyframes nameSweep{
+  0%  {background-position:15% 0}
+  100%{background-position:85% 0}
 }
 
 .hero-name{
@@ -629,6 +640,27 @@ main::after{
   95.83%{background-position:-18.4px -43.3px,5.2px -33.3px,32.8px -58.3px,-4.1px -26.7px}
   100%{background-position:0px 0px,17.3px 0px,29.5px 0px,8px 0px}
 }
+
+/* ---------- 四角鎏金云纹 ----------
+   四个角各一朵「如意云头」螺旋 + 两条飘带 + 角上的细框线，金箔质感。
+   要点：
+   1) position:fixed —— 钉在视口四角，页面滚动时不动；
+   2) 只画一份图形，另外三个角用 rotate 转 90/180/270 度，四角绝对对称；
+   3) z-index:-1 让它待在 main 背景之上、正文之下，所以只会填空隙、不会压住文字；
+   4) 顶部导航是 z-index:60，仍在云纹之上，不会被挡。 */
+.corners{position:absolute;inset:0;pointer-events:none}
+.corner{
+  position:fixed;width:280px;height:280px;
+  z-index:-1;pointer-events:none;
+  opacity:.55;
+  filter:drop-shadow(0 0 14px rgba(214,178,86,.30));
+}
+.corner svg{display:block;width:100%;height:100%}
+.corner:nth-child(1){top:0;left:0}
+.corner:nth-child(2){top:0;right:0;transform:rotate(90deg)}
+.corner:nth-child(3){bottom:0;right:0;transform:rotate(180deg)}
+.corner:nth-child(4){bottom:0;left:0;transform:rotate(270deg)}
+
 .sec{
   width:min(100%,var(--maxw));
   margin:0 auto;
@@ -859,7 +891,9 @@ main::after{
 .footer{
   position:relative;z-index:2;
   border-top:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(12,20,44,.86) 0%,rgba(8,15,31,.94) 100%);
+  /* 页脚保持半透明：底部两角的鎏金云纹就在它后面，
+     全遮住的话滚动到页面最底时角上会缺一块 */
+  background:linear-gradient(180deg,rgba(12,20,44,.55) 0%,rgba(8,15,31,.72) 100%);
   padding:38px 24px 46px;
 }
 .foot-inner{

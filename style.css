@@ -242,9 +242,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   position:fixed;inset:0;z-index:140;
   /* align-content:center 不能少：网格行默认 stretch，会把两行之间撑出 200+px 的空隙，
      结果拓扑图和下面绝对定位的标题 / 进度条 / 提示重叠。 */
-  display:none;place-items:center;align-content:center;row-gap:26px;
+  display:none;place-items:center;
   /* 背景交给 .bg 的夜空层（和入口页同一套），这里保持透明 */
-  background:transparent;
+  background:#05080f;
   opacity:0;transition:opacity .5s var(--ease);
 }
 .loader.show{display:grid;opacity:1}
@@ -302,14 +302,14 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 
 .load-title{
-  text-align:center;
+  position:absolute;left:0;right:0;bottom:30%;text-align:center;
   font-size:14px;letter-spacing:.34em;color:var(--ink-soft);
   padding-left:.34em;                 /* 补偿末字字距，保持视觉居中 */
   opacity:0;animation:fadeUp .6s ease .3s forwards;
 }
 
 .load-bar{
-  /* 流式排列：不再用绝对定位，换屏幕高度也不会错位 */
+  position:absolute;left:50%;bottom:22%;transform:translateX(-50%);
   width:min(46vw,300px);height:2px;border-radius:2px;
   background:rgba(255,255,255,.12);overflow:hidden;
 }
@@ -322,7 +322,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 @keyframes barFill{0%{transform:scaleX(0)}70%{transform:scaleX(.86)}100%{transform:scaleX(1)}}
 
 .load-hint{
-  text-align:center;
+  position:absolute;left:0;right:0;bottom:16%;text-align:center;
   font-family:var(--mono);font-size:12px;letter-spacing:3px;color:var(--ink-fade);
   opacity:0;animation:fadeUp .5s ease .4s forwards;
 }
@@ -413,7 +413,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
    锥形渐变里亮的只有 60° 左右的一小段，所以是一束光在绕着字走，
    不是一团糊开的辉光。缩放用 translateX(-50%) 定位在文字中心，
    保证放大的方向和真字同心，不会错位。 */
-.hero-name,.entry-id,.load-name{
+.hero-name,.entry-id{
   position:relative;isolation:isolate;
   background:linear-gradient(100deg,#5c440f 0%,#9c7d24 20%,#c8a94f 36%,
                              #9c7d24 52%,#6d5215 68%,#b8993f 84%,#806316 100%);
@@ -423,7 +423,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   /* 底色不参与动画：名字本体是静态暗金，只有下面那道亮光在走，
      这样"四个字依次亮起"才看得清楚，不会两种动效互相干扰。 */
 }
-.hero-name::before,.entry-id::before,.load-name::before{
+.hero-name::before,.entry-id::before{
   content:attr(data-text);
   position:absolute;top:0;left:50%;
   transform:translateX(-50%) scale(1.07);
@@ -1012,32 +1012,8 @@ main::after,
 .fx-tl{top:0;left:0;background-image:url(orn-tl.png);transform:rotate(180deg)}
 .fx-br{bottom:0;right:0;background-image:url(orn-br.png)}
 
-/* 加载页的名字：暗金 + 一道横扫的光（和主页首屏同一套规则），
-   字号比首屏小一号，只做视觉焦点不做主角 */
-.load-name{
-  font-size:clamp(30px,4.2vw,52px);
-  font-weight:800;letter-spacing:.1em;line-height:1.1;
-  padding-left:.1em;
-  margin-bottom:6px;
-}
-
-/* 加载页：拓扑图背后的旋转辉光，让等待画面有「在运转」的感觉 */
-.load-halo{
-  position:absolute;left:50%;top:34%;
-  width:min(72vw,480px);aspect-ratio:1;transform:translate(-50%,-50%);
-  border-radius:50%;pointer-events:none;
-  background:conic-gradient(from var(--flow),
-    rgba(94,234,212,0)    0deg,
-    rgba(94,234,212,.30) 120deg,
-    rgba(124,156,255,.34) 220deg,
-    rgba(94,234,212,0)   360deg);
-  filter:blur(46px);
-  animation:flowSpin 7s linear infinite;
-}
-/* 加载页五段内容全部走流式居中排列，不用绝对定位。
-   之前用 bottom:30% / 22% / 16% 定位，一旦上面多出元素就会和拓扑图重叠，
-   而且换屏幕高度必然错位；改成流式 + row-gap 后任何视口都稳。 */
-.load-name,.topo,.load-title,.load-bar,.load-hint{position:relative;z-index:2}
+/* 入口页 / 加载页共用的特效层里，只有入口页用到角花；
+   加载页保持原来那种纯科技线条的极简风格，不加雪、不加角花、不加名字。 */
 
 
 /* 内容变多了，拓扑图收小一点，整体刚好一屏 */

@@ -28,6 +28,9 @@
   --acc-3:#c08cff;        /* 紫 */
   --warm:#ffd08a;         /* 暖金 */
 
+  /* 开场动画的时长基准：头像直径。名字字号由它换算，保持一致比例 */
+  --avatar:140px;
+
   --r:16px;
   --r-sm:10px;
   --maxw:1180px;
@@ -86,6 +89,9 @@ html:not(.js-ready) .entry-id{-webkit-text-fill-color:currentColor!important;col
 .load-hint{padding-left:3px}
 .entry-hint{padding-left:2.4px}
 .hero-tag{padding-left:.22em}
+/* 名字带 letter-spacing 且居中，补一个末字字距保证光学居中 */
+.hero-name{padding-left:.08em}
+.entry-id{padding-left:.08em}
 .contact-label{padding-left:.16em}
 .foot-sub{padding-left:1.6px}
 
@@ -198,13 +204,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 
 .entry-id{
-  font-size:clamp(34px,7vw,62px);
-  font-weight:800;letter-spacing:.06em;line-height:1.15;
-  background:linear-gradient(100deg,#eaf4ff 0%,#9fe9dd 34%,#8fb0ff 68%,#e8d3ff 100%);
-  background-size:220% 100%;
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  -webkit-text-fill-color:transparent;
-  animation:sheen 6s ease-in-out infinite;
+  font-size:clamp(34px,7vw,64px);
+  font-weight:800;letter-spacing:.08em;line-height:1.15;
+  filter:drop-shadow(0 3px 22px rgba(201,162,39,.26));
 }
 @keyframes sheen{0%{background-position:180% 0}100%{background-position:-80% 0}}
 
@@ -344,7 +346,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   -webkit-backdrop-filter:blur(16px);
   border-bottom-color:var(--line);
 }
-.nav-brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;letter-spacing:1.4px;color:var(--ink-soft)}
+.nav-brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;letter-spacing:1.4px;color:#cbb069}
 .nav-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:blink 2.4s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 .nav-links{display:flex;align-items:center;gap:6px}
@@ -387,28 +389,56 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .hero-greet{font-size:16px;letter-spacing:.3em;color:var(--ink-mute);margin-bottom:18px}
 
 /* 首屏头像：放在「你好，我是」和学号之间 */
-.hero-avatar-wrap{position:relative;width:140px;height:140px;margin:0 auto 22px}
+.hero-avatar-wrap{position:relative;width:var(--avatar);height:var(--avatar);margin:0 auto 22px}
 .hero-avatar-wrap::before{
   content:"";position:absolute;inset:-22px;border-radius:50%;
-  background:radial-gradient(circle,rgba(94,234,212,.30) 0%,rgba(94,234,212,0) 70%);
+  background:radial-gradient(circle,rgba(94,234,212,.20) 0%,rgba(94,234,212,0) 70%);
   animation:avPulse 5.5s ease-in-out infinite;
 }
 .hero-avatar{
   position:relative;display:block;
-  width:140px;height:140px;border-radius:50%;object-fit:cover;
-  border:2px solid rgba(94,234,212,.42);
-  box-shadow:0 0 0 7px rgba(94,234,212,.07),0 18px 46px rgba(0,0,0,.55);
+  width:var(--avatar);height:var(--avatar);border-radius:50%;object-fit:cover;
+  border:2px solid rgba(94,234,212,.34);
+  box-shadow:0 0 0 7px rgba(94,234,212,.06),0 18px 46px rgba(0,0,0,.55);
 }
 @keyframes avPulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
 
-.hero-name{
-  font-size:clamp(40px,9vw,104px);
-  font-weight:800;letter-spacing:.04em;line-height:1.05;
-  background:linear-gradient(100deg,#ffffff 0%,#a8ecdf 30%,#9db6ff 62%,#e2d0ff 100%);
+/* 名字：暗金渐变 + 字外一圈流动的光
+   做法：把同一段文字在 ::before 里再画一遍，用锥形渐变裁进字形，再整体模糊。
+   模糊会把字形边界向外晕开，形成「一圈光」；锥形渐变的角度由 --flow 驱动，
+   所以这圈光是绕着字流动的。isolation + z-index:-1 让光环待在文字底下，不糊住字。 */
+.hero-name,.entry-id{
+  position:relative;isolation:isolate;
+  background:linear-gradient(100deg,#5c440f 0%,#9c7d24 20%,#c8a94f 36%,
+                             #9c7d24 52%,#6d5215 68%,#b8993f 84%,#806316 100%);
   background-size:220% 100%;
-  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
-  animation:sheen 7s ease-in-out infinite;
-  filter:drop-shadow(0 4px 30px rgba(94,234,212,.18));
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  animation:sheen 9s ease-in-out infinite;
+}
+.hero-name::before,.entry-id::before{
+  content:attr(data-text);
+  position:absolute;left:0;right:0;top:0;z-index:-1;
+  background:conic-gradient(from var(--flow),
+    rgba(214,186,110,.85)   0deg,
+    rgba(140,110,34,.08)   70deg,
+    rgba(214,186,110,.85)  140deg,
+    rgba(140,110,34,.08)  210deg,
+    rgba(214,186,110,.85)  280deg,
+    rgba(140,110,34,.08)  340deg,
+    rgba(214,186,110,.85)  360deg);
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;-webkit-text-fill-color:transparent;
+  filter:blur(9px);
+  animation:flowSpin 5s linear infinite;
+}
+
+.hero-name{
+  /* 字号跟着头像直径走：0.55 ≈ 每个字的高度是头像直径的一半多一点，
+     正好落在你要的「五分之三到一半之间」，换屏幕也不会跑偏 */
+  font-size:calc(var(--avatar) * 0.55);
+  font-weight:800;letter-spacing:.08em;line-height:1.05;
+  filter:drop-shadow(0 4px 30px rgba(160,126,32,.30));
 }
 
 .hero-tag{margin-top:20px;font-size:15px;letter-spacing:.22em;color:var(--acc)}
@@ -496,6 +526,106 @@ main{
     linear-gradient(180deg,#0a1122 0%,#111b3d 42%,#0c142c 100%);
 }
 
+/* ---------- 落雪 ----------
+   两层纯 CSS 雪，无 JS、无图片。远层小而密、近层大而疏。
+   每层内部有 4 组各自独立的雪花（不同格子尺寸 → 不同下落速度，
+   不同摆幅与相位 → 不会同步摆动），所以看起来是自然飘落而不是整体平移。
+
+   两点关键：
+   1) 横向摆动 + 纵向下落都由 background-position 完成，横向按正弦采样 24 段，
+      所以雪花是左右摇摆着往下飘，而不是直上直下。
+   2) 每组雪花的「下落总量」都取成自己格子尺寸的整数倍（600=2×300、480=2×240…），
+      摆动又恰好回到起点，所以循环时看不到跳变。
+   落雪画在 main 背景之上、正文之下（z-index:-1），文字和卡片始终清楚。 */
+main::before,
+main::after{
+  content:"";position:fixed;inset:0;
+  z-index:-1;pointer-events:none;
+  background-repeat:repeat;
+  will-change:background-position;
+}
+main::before{
+  background-image:
+    radial-gradient(circle 4.0px at 18% 12%, rgba(255,255,255,.70), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 3.4px at 63% 27%, rgba(255,255,255,.58), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 4.4px at 34% 47%, rgba(255,255,255,.64), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 3.8px at 74% 62%, rgba(255,255,255,.52), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 4.8px at 22% 16%, rgba(255,255,255,.48), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 4.2px at 68% 34%, rgba(255,255,255,.42), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 5.4px at 41% 58%, rgba(255,255,255,.44), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 3.8px at 89% 72%, rgba(255,255,255,.36), rgba(255,255,255,0) 100%);
+  background-size:300px 300px,240px 240px,420px 420px,180px 180px,
+                  300px 300px,240px 240px,420px 420px,180px 180px;
+  animation:snow-far 34s linear infinite;
+}
+main::after{
+  background-image:
+    radial-gradient(circle 9.0px at 26% 20%, rgba(255,255,255,.58), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 7.5px at 71% 43%, rgba(255,255,255,.50), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 10.5px at 44% 67%, rgba(255,255,255,.54), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 12.0px at 33% 46%, rgba(255,255,255,.44), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 8.5px at 15% 84%, rgba(255,255,255,.48), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 9.5px at 82% 24%, rgba(255,255,255,.40), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 8.0px at 58% 79%, rgba(255,255,255,.38), rgba(255,255,255,0) 100%),
+    radial-gradient(circle 11.0px at 12% 55%, rgba(255,255,255,.40), rgba(255,255,255,0) 100%);
+  background-size:520px 520px,400px 400px,700px 700px,320px 320px,
+                  520px 520px,400px 400px,700px 700px,320px 320px;
+  animation:snow-near 26s linear infinite;
+}
+@keyframes snow-far{
+  0%{background-position:0px -600px,8.7px -480px,15.6px -840px,4px -360px}
+  4.17%{background-position:9.9px -575px,9.7px -460px,4.7px -805px,7.7px -345px}
+  8.33%{background-position:14px -550px,5px -440px,-9px -770px,6.9px -330px}
+  12.5%{background-position:9.9px -525px,-2.6px -420px,-17.4px -735px,2.1px -315px}
+  16.67%{background-position:0px -500px,-8.7px -400px,-15.6px -700px,-4px -300px}
+  20.83%{background-position:-9.9px -475px,-9.7px -380px,-4.7px -665px,-7.7px -285px}
+  25%{background-position:-14px -450px,-5px -360px,9px -630px,-6.9px -270px}
+  29.17%{background-position:-9.9px -425px,2.6px -340px,17.4px -595px,-2.1px -255px}
+  33.33%{background-position:0px -400px,8.7px -320px,15.6px -560px,4px -240px}
+  37.5%{background-position:9.9px -375px,9.7px -300px,4.7px -525px,7.7px -225px}
+  41.67%{background-position:14px -350px,5px -280px,-9px -490px,6.9px -210px}
+  45.83%{background-position:9.9px -325px,-2.6px -260px,-17.4px -455px,2.1px -195px}
+  50%{background-position:0px -300px,-8.7px -240px,-15.6px -420px,-4px -180px}
+  54.17%{background-position:-9.9px -275px,-9.7px -220px,-4.7px -385px,-7.7px -165px}
+  58.33%{background-position:-14px -250px,-5px -200px,9px -350px,-6.9px -150px}
+  62.5%{background-position:-9.9px -225px,2.6px -180px,17.4px -315px,-2.1px -135px}
+  66.67%{background-position:0px -200px,8.7px -160px,15.6px -280px,4px -120px}
+  70.83%{background-position:9.9px -175px,9.7px -140px,4.7px -245px,7.7px -105px}
+  75%{background-position:14px -150px,5px -120px,-9px -210px,6.9px -90px}
+  79.17%{background-position:9.9px -125px,-2.6px -100px,-17.4px -175px,2.1px -75px}
+  83.33%{background-position:0px -100px,-8.7px -80px,-15.6px -140px,-4px -60px}
+  87.5%{background-position:-9.9px -75px,-9.7px -60px,-4.7px -105px,-7.7px -45px}
+  91.67%{background-position:-14px -50px,-5px -40px,9px -70px,-6.9px -30px}
+  95.83%{background-position:-9.9px -25px,2.6px -20px,17.4px -35px,-2.1px -15px}
+  100%{background-position:0px 0px,8.7px 0px,15.6px 0px,4px 0px}
+}
+@keyframes snow-near{
+  0%{background-position:0px -1040px,17.3px -800px,29.5px -1400px,8px -640px}
+  4.17%{background-position:18.4px -996.7px,19.3px -766.7px,8.8px -1341.7px,15.5px -613.3px}
+  8.33%{background-position:26px -953.3px,10px -733.3px,-17px -1283.3px,13.9px -586.7px}
+  12.5%{background-position:18.4px -910px,-5.2px -700px,-32.8px -1225px,4.1px -560px}
+  16.67%{background-position:0px -866.7px,-17.3px -666.7px,-29.5px -1166.7px,-8px -533.3px}
+  20.83%{background-position:-18.4px -823.3px,-19.3px -633.3px,-8.8px -1108.3px,-15.5px -506.7px}
+  25%{background-position:-26px -780px,-10px -600px,17px -1050px,-13.9px -480px}
+  29.17%{background-position:-18.4px -736.7px,5.2px -566.7px,32.8px -991.7px,-4.1px -453.3px}
+  33.33%{background-position:0px -693.3px,17.3px -533.3px,29.5px -933.3px,8px -426.7px}
+  37.5%{background-position:18.4px -650px,19.3px -500px,8.8px -875px,15.5px -400px}
+  41.67%{background-position:26px -606.7px,10px -466.7px,-17px -816.7px,13.9px -373.3px}
+  45.83%{background-position:18.4px -563.3px,-5.2px -433.3px,-32.8px -758.3px,4.1px -346.7px}
+  50%{background-position:0px -520px,-17.3px -400px,-29.5px -700px,-8px -320px}
+  54.17%{background-position:-18.4px -476.7px,-19.3px -366.7px,-8.8px -641.7px,-15.5px -293.3px}
+  58.33%{background-position:-26px -433.3px,-10px -333.3px,17px -583.3px,-13.9px -266.7px}
+  62.5%{background-position:-18.4px -390px,5.2px -300px,32.8px -525px,-4.1px -240px}
+  66.67%{background-position:0px -346.7px,17.3px -266.7px,29.5px -466.7px,8px -213.3px}
+  70.83%{background-position:18.4px -303.3px,19.3px -233.3px,8.8px -408.3px,15.5px -186.7px}
+  75%{background-position:26px -260px,10px -200px,-17px -350px,13.9px -160px}
+  79.17%{background-position:18.4px -216.7px,-5.2px -166.7px,-32.8px -291.7px,4.1px -133.3px}
+  83.33%{background-position:0px -173.3px,-17.3px -133.3px,-29.5px -233.3px,-8px -106.7px}
+  87.5%{background-position:-18.4px -130px,-19.3px -100px,-8.8px -175px,-15.5px -80px}
+  91.67%{background-position:-26px -86.7px,-10px -66.7px,17px -116.7px,-13.9px -53.3px}
+  95.83%{background-position:-18.4px -43.3px,5.2px -33.3px,32.8px -58.3px,-4.1px -26.7px}
+  100%{background-position:0px 0px,17.3px 0px,29.5px 0px,8px 0px}
+}
 .sec{
   width:min(100%,var(--maxw));
   margin:0 auto;
@@ -599,16 +729,15 @@ main{
   box-shadow:0 0 0 4px rgba(94,234,212,.07),0 8px 24px rgba(0,0,0,.5);
 }
 
-/* 头像双色调
-   原图是黑白漫画，直接放进深色科技主题会有"气质割裂"。
-   sepia 先建立单色基准 → hue-rotate 把它转到青蓝 → saturate 加强色度，
-   于是头发与线条仍是深色，浅色部分变成淡青，和整站配色统一。
-   只改变颜色倾向，不改图形本身。 */
+/* 头像用最初的黑白原图，不加任何滤镜。
+   期间试过青蓝双色调（sepia + hue-rotate）去配深色科技风，
+   但染完之后浅色部分发白、看着像过曝，压暗了又偏灰，所以撤掉。
+   黑白漫画和深色背景的高对比本身就很干净。 */
 .avatar,
 .hero-avatar{
-  filter:sepia(.9) hue-rotate(158deg) saturate(1.55) brightness(1.06) contrast(1.03);
+  filter:none;
 }
-.profile-name{font-size:17px;font-weight:700;font-family:var(--mono);letter-spacing:.04em}
+.profile-name{font-size:17px;font-weight:700;font-family:var(--mono);letter-spacing:.04em;color:#d9bd72}
 .profile-sub{margin-top:2px;font-size:12.5px;color:var(--ink-mute);letter-spacing:.1em}
 .profile-list{flex:1;display:grid;gap:12px;align-content:space-between}
 /* 档案卡标签列：固定宽度，保证"标签—值"两列严格对齐 */
@@ -727,7 +856,7 @@ main{
 .footer{
   position:relative;z-index:2;
   border-top:1px solid var(--line);
-  background:linear-gradient(180deg,#0c142c 0%,#080f1f 100%);
+  background:linear-gradient(180deg,rgba(12,20,44,.86) 0%,rgba(8,15,31,.94) 100%);
   padding:38px 24px 46px;
 }
 .foot-inner{
@@ -773,7 +902,7 @@ main{
   .nav-links a:not(.nav-cta){display:none}
   .nav{padding:12px 18px}
   .hero{padding:104px 18px 80px}
-  .hero-avatar-wrap,.hero-avatar{width:106px;height:106px}
+  :root{--avatar:106px}
   .hero-avatar-wrap{margin-bottom:16px}
   .hero-greet{margin-bottom:14px}
   .grid-3,.grid-4{grid-template-columns:1fr}
@@ -796,6 +925,8 @@ main{
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
+  /* 开启「减少动态效果」时直接不画雪 */
+  main::before,main::after{display:none}
 }
 
 /* 打印 */

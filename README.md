@@ -17,7 +17,7 @@
 - **可降级** —— 脚本被禁用或被拦截时自动跳过开场动画，直接展示全部内容
 - **尊重系统偏好** —— 开启「减少动态效果」后不再播放动画
 - **支持打印** —— 打印时自动隐藏按钮与背景、去掉阴影
-- **背景音乐** —— 左下角有个可拖动的金色圆钮，点开可切换播放/暂停并调音量；位置和音量会记住。站点根部没有 `music.mp3` 时控件自动隐藏，不会留一个坏掉的播放器
+- **背景音乐** —— 左下角有个可拖动的金色圆钮，点开可切换播放/暂停并调音量；位置和音量会记住。站点根部没有 `music.m4a` 时控件自动隐藏，不会留一个坏掉的播放器
 
 ## 访问流程
 
@@ -37,7 +37,7 @@ personal-page/
 ├── avatar.png      个人头像
 ├── orn-tl.png      左上角鎏金角花
 ├── orn-br.png      右下角鎏金角花
-├── music.mp3       背景音乐（可选，放了才出现播放器）
+├── music.m4a       背景音乐（可选，放了才出现播放器）
 ├── .nojekyll       告诉 GitHub Pages 跳过 Jekyll 处理
 └── README.md       本文件
 ```
@@ -63,6 +63,14 @@ personal-page/
 - `IntersectionObserver` 实现滚动进场动画
 - `requestAnimationFrame` 实现数字滚动
 - `navigator.clipboard` 实现一键复制，并保留 `execCommand` 兜底
+
+## 背景音乐出处
+
+- 曲目：**First Light Particles**（CC0 大气钢琴 / 氛围）
+- 来源：<https://opengameart.org/node/182244>
+- 许可：**CC0（公共领域）** —— 可商用、无需署名、无版权风险
+- 本站使用 `music.m4a`（192 kbps AAC）：由原始 WAV 用 Windows 自带
+  `MediaTranscoder` 转码得到，未引入任何第三方工具
 
 ## 本地预览
 

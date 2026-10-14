@@ -74,7 +74,7 @@ html:not(.js-ready) .entry-id{-webkit-text-fill-color:currentColor!important;col
    2) 居中文本补偿末字字距，保证光学居中
    3) 行高按层级统一：标题紧凑、正文舒展
 ------------------------------------ */
-.sec-no,.stat b,.avatar,.nav-brand,.profile-name,.tl-when,.entry-id,
+.sec-no,.stat b,.nav-brand,.profile-name,.tl-when,.entry-id,
 .hero-name,.entry-hint,.load-hint,.foot-sub,[data-count]{
   font-variant-numeric:tabular-nums;
   font-feature-settings:"tnum" 1;
@@ -523,12 +523,14 @@ main{
 /* 01 关于我 —— 档案卡（纵向撑满，与左侧卡片底边对齐） */
 .card.profile{display:flex;flex-direction:column}
 .profile-top{display:flex;align-items:center;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:18px}
+/* 头像：真实图片，圆形 + 主题色描边。
+   固定 width/height 属性与 CSS 同时给值，避免图片加载时卡片跳动（CLS）。 */
 .avatar{
-  width:58px;height:58px;border-radius:16px;flex:none;
-  display:grid;place-items:center;
-  font-family:var(--mono);font-size:17px;font-weight:800;color:#04121a;
+  width:64px;height:64px;border-radius:50%;flex:none;
+  display:block;object-fit:cover;
+  border:2px solid rgba(94,234,212,.34);
   background:linear-gradient(135deg,var(--acc),var(--acc-2));
-  box-shadow:0 6px 20px rgba(94,234,212,.28);
+  box-shadow:0 0 0 4px rgba(94,234,212,.07),0 8px 24px rgba(0,0,0,.5);
 }
 .profile-name{font-size:17px;font-weight:700;font-family:var(--mono);letter-spacing:.04em}
 .profile-sub{margin-top:2px;font-size:12.5px;color:var(--ink-mute);letter-spacing:.1em}

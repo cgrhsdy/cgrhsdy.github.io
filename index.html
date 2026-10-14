@@ -39,6 +39,14 @@
     <div class="bg-glow"></div>
   </div>
 
+  <!-- 与主页面同款的落雪 + 双对角鎏金角花 -->
+  <div class="fx-layer" aria-hidden="true">
+    <div class="fx-snow fx-far"></div>
+    <div class="fx-snow fx-near"></div>
+    <div class="fx-corner fx-tl"></div>
+    <div class="fx-corner fx-br"></div>
+  </div>
+
   <div class="entry-card">
     <div class="entry-badge">个人信息主页</div>
     <h1 class="entry-id" data-text="初阳零三">初阳零三</h1>
@@ -56,6 +64,30 @@
      ② 加载页（签名描边动画）
      ============================================================ -->
 <div class="loader" id="loader" aria-hidden="true">
+  <!-- 加载页也用同一套夜空背景 -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg-sky"></div>
+    <div class="bg-aurora"></div>
+    <div class="bg-stars"></div>
+    <svg class="bg-mtn" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMax slice">
+      <path class="m3" d="M0,470 L110,392 L205,436 L330,338 L440,410 L560,318 L670,398 L790,330 L900,406 L1020,346 L1140,414 L1260,352 L1380,420 L1440,382 L1440,620 L0,620 Z"/>
+      <path class="m2" d="M0,520 L130,452 L250,500 L380,428 L500,490 L620,436 L740,502 L870,444 L990,506 L1110,452 L1230,510 L1350,460 L1440,504 L1440,620 L0,620 Z"/>
+      <path class="m1" d="M0,566 L150,522 L290,560 L430,516 L570,558 L710,520 L850,562 L990,524 L1130,564 L1270,528 L1400,566 L1440,548 L1440,620 L0,620 Z"/>
+    </svg>
+    <div class="bg-glow"></div>
+    <!-- 拓扑图背后的旋转辉光：放在夜空层里，所以它在文字之下、背景之上 -->
+    <div class="load-halo"></div>
+  </div>
+
+  <div class="fx-layer" aria-hidden="true">
+    <div class="fx-snow fx-far"></div>
+    <div class="fx-snow fx-near"></div>
+    <div class="fx-corner fx-tl"></div>
+    <div class="fx-corner fx-br"></div>
+  </div>
+
+  <!-- 名字用和主页首屏同一套暗金 + 流光 -->
+  <div class="load-name" data-text="初阳零三">初阳零三</div>
   <svg class="topo" viewBox="0 0 520 340">
     <!-- 连线 -->
     <g class="topo-links">

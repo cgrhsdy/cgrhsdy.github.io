@@ -1018,3 +1018,91 @@ main::after,
 
 /* 内容变多了，拓扑图收小一点，整体刚好一屏 */
 .topo{width:min(58vw,360px)}
+/* ============================================================
+   背景音乐控件
+   —— 明亮、可拖动、点开调开关与音量
+   ============================================================ */
+.bgm{
+  position:fixed;left:24px;bottom:24px;z-index:220;   /* 高于入口页(120)与加载页(140) */
+  display:flex;align-items:flex-end;gap:10px;
+  /* 面板收起时仍占布局空间；不关掉 pointer-events 会挡住左下角页面的点击 */
+  pointer-events:none;
+  touch-action:none;                                   /* 触屏拖动不被页面滚动抢走 */
+}
+.bgm[hidden]{display:none}
+.bgm.dragging{cursor:grabbing}
+
+/* 圆形亮金按钮：渐变底 + 双层光晕，在深色页面上足够跳 */
+.bgm-btn{
+  position:relative;flex:none;
+  width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;cursor:grab;
+  color:#241a04;pointer-events:auto;                 /* 只有圆钮本身接收指针事件 */
+  background:linear-gradient(135deg,#fbeec4 0%,#e8cd7d 34%,#c9a227 72%,#f2e0a4 100%);
+  border:1px solid rgba(255,246,214,.75);
+  box-shadow:0 0 0 5px rgba(201,162,39,.14),
+             0 0 22px rgba(226,190,92,.45),
+             0 10px 26px rgba(0,0,0,.5);
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+.bgm-btn:hover{transform:translateY(-2px);box-shadow:0 0 0 7px rgba(201,162,39,.18),0 0 30px rgba(226,190,92,.6),0 12px 30px rgba(0,0,0,.55)}
+.bgm-btn:active{cursor:grabbing;transform:translateY(0) scale(.96)}
+.bgm-btn svg{width:24px;height:24px}
+
+/* 播放中的四根跳动小竖条 */
+.bgm-wave{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);display:flex;gap:2.5px;height:9px;align-items:flex-end}
+.bgm-wave i{width:2.5px;height:3px;border-radius:2px;background:#3a2a06;opacity:.75}
+.bgm.playing .bgm-wave i{animation:bgmWave .9s ease-in-out infinite}
+.bgm.playing .bgm-wave i:nth-child(2){animation-delay:.15s}
+.bgm.playing .bgm-wave i:nth-child(3){animation-delay:.3s}
+.bgm.playing .bgm-wave i:nth-child(4){animation-delay:.45s}
+@keyframes bgmWave{0%,100%{height:3px}50%{height:9px}}
+
+/* 展开的控制面板 */
+.bgm-panel{
+  width:186px;padding:14px 16px 12px;
+  border-radius:16px;
+  background:rgba(12,20,42,.82);
+  border:1px solid rgba(226,190,92,.35);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 0 22px rgba(226,190,92,.16),0 16px 40px rgba(0,0,0,.55);
+  pointer-events:none;opacity:0;visibility:hidden;transform:translateY(6px);
+  transition:opacity .22s var(--ease),transform .22s var(--ease),visibility .22s;
+}
+.bgm.open .bgm-panel{pointer-events:auto;opacity:1;visibility:visible;transform:translateY(0)}
+
+.bgm-title{font-size:13px;font-weight:700;letter-spacing:.12em;color:#f0dc9e;margin-bottom:10px}
+.bgm-toggle{
+  width:100%;padding:8px 0;border-radius:10px;font-size:13.5px;font-weight:700;letter-spacing:.1em;
+  color:#241a04;
+  border:1px solid rgba(255,246,214,.6);cursor:pointer;
+  transition:filter .2s var(--ease);
+}
+.bgm-toggle:hover{filter:brightness(1.08)}
+.bgm.playing .bgm-toggle{background:linear-gradient(135deg,#a9e6d6,#5eead4 60%,#3fbfa8);color:#04211c}
+
+.bgm-vol{display:flex;align-items:center;gap:10px;margin-top:12px}
+.bgm-vol > span{flex:none;font-size:12px;letter-spacing:.1em;color:var(--ink-mute)}
+.bgm-vol input[type=range]{
+  -webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+  background:rgba(255,255,255,.16);outline:none;cursor:pointer;
+}
+.bgm-vol input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+  background:linear-gradient(135deg,#fbeec4,#c9a227);
+  border:1px solid rgba(255,246,214,.8);
+  box-shadow:0 0 10px rgba(226,190,92,.7);
+}
+.bgm-vol input[type=range]::-moz-range-thumb{
+  width:14px;height:14px;border:1px solid rgba(255,246,214,.8);border-radius:50%;
+  background:#e0c26a;box-shadow:0 0 10px rgba(226,190,92,.7);
+}
+.bgm-tip{margin-top:11px;font-size:12px;color:var(--ink-fade);letter-spacing:.04em}
+.bgm-hint{margin-top:4px;font-size:12px;color:var(--ink-fade);opacity:.7}
+
+/* 窄屏：面板别顶出屏幕 */
+@media (max-width:420px){
+  .bgm{left:14px;bottom:14px;gap:8px}
+  .bgm-btn{width:46px;height:46px}
+  .bgm-panel{width:150px;padding:12px 13px 10px}
+}

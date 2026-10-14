@@ -486,6 +486,37 @@
   <div class="progress" id="progress"></div>
 </div>
 
+<!-- ============================================================
+     背景音乐控件
+     必须放在 app.js 之前 —— 脚本是按 DOM 顺序同步执行的，
+     如果 script 写在控件前面，取 #bgm 会拿到 null，整段逻辑会被跳过。
+     放在 .site 之外，所以入口页 / 加载页 / 主页都能用。
+     整块可以用鼠标拖动（位置记在 localStorage）。
+     默认 hidden：只有 music.mp3 真的加载成功了才出现，
+     这样即便忘了放音频文件，页面上也不会留一个坏掉的播放器。
+     ============================================================ -->
+<div class="bgm" id="bgm" hidden>
+  <button class="bgm-btn" id="bgmBtn" type="button" aria-label="背景音乐开关" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 17.5V5.2l10-2v12.3"/><circle cx="6.2" cy="17.5" r="2.8"/><circle cx="16.2" cy="15.5" r="2.8"/>
+    </svg>
+    <span class="bgm-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </button>
+
+  <div class="bgm-panel" id="bgmPanel" role="group" aria-label="音乐控制">
+    <div class="bgm-title">背景音乐</div>
+    <button class="bgm-toggle" id="bgmToggle" type="button">播放</button>
+    <label class="bgm-vol">
+      <span>音量</span>
+      <input type="range" id="bgmVol" min="0" max="100" step="1" value="25" aria-label="音量">
+    </label>
+    <div class="bgm-tip" id="bgmTip">所念皆星河 · 纯音乐</div>
+    <div class="bgm-hint">拖动按钮可移动位置</div>
+  </div>
+
+  <audio id="bgmAudio" src="music.mp3" loop preload="metadata"></audio>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>

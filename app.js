@@ -40,6 +40,8 @@
       initReveal();
       // 顶部统计数字有数据后再跑
       runCounters();
+      // 「进入」本身就是一次用户手势，这里起播不会被浏览器的自动播放策略拦
+      if (window.__bgmStart) window.__bgmStart();
       // 移除加载页，避免它继续占据层级
       setTimeout(function () { loader.style.display = 'none'; }, 600);
     }, 2500);
@@ -215,7 +217,137 @@
   });
 
   /* ------------------------------------------------------------
-     ⑥ 年份 & 首屏初始化
+     ⑥ 背景音乐控件（可拖动、点开调开关与音量）
+     ------------------------------------------------------------ */
+  var bgmEl    = $('#bgm');
+  var bgmBtn   = $('#bgmBtn');
+  var bgmTog   = $('#bgmToggle');
+  var bgmVol   = $('#bgmVol');
+  var bgmAudio = $('#bgmAudio');
+  var BGM_KEY  = 'bgm-pref';
+
+  var bgmPref = (function () {
+    try { return JSON.parse(localStorage.getItem(BGM_KEY)) || {}; } catch (e) { return {}; }
+  })();
+  function bgmSave() {
+    try { localStorage.setItem(BGM_KEY, JSON.stringify(bgmPref)); } catch (e) { /* 隐私模式下忽略 */ }
+  }
+
+  if (bgmEl && bgmAudio) {
+    var dragMoved = false, dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+
+    // 音量：优先用上次记住的
+    var v0 = typeof bgmPref.vol === 'number' ? bgmPref.vol : 25;
+    bgmVol.value = String(v0);
+    bgmAudio.volume = Math.max(0, Math.min(1, v0 / 100));
+
+    // 位置：优先用上次拖动后的位置
+    if (typeof bgmPref.x === 'number' && typeof bgmPref.y === 'number') {
+      bgmEl.style.left = bgmPref.x + 'px';
+      bgmEl.style.top = bgmPref.y + 'px';
+      bgmEl.style.bottom = 'auto';
+    }
+
+    function setPlaying(on) {
+      bgmEl.classList.toggle('playing', on);
+      bgmTog.textContent = on ? '暂停' : '播放';
+      bgmBtn.setAttribute('aria-label', on ? '暂停背景音乐' : '播放背景音乐');
+    }
+    function bgmPlay() {
+      var p = bgmAudio.play();
+      if (p && typeof p.then === 'function') {
+        p.then(function () { setPlaying(true); bgmPref.on = true; bgmSave(); },
+               function () { setPlaying(false); });
+      } else {
+        setPlaying(true);
+      }
+    }
+    function bgmPause() {
+      bgmAudio.pause();
+      setPlaying(false);
+      bgmPref.on = false;
+      bgmSave();
+    }
+
+    // 只有音频真的能加载才显示控件 —— 忘了放 music.mp3 时不会留一个坏掉的播放器
+    function bgmReveal() { bgmEl.hidden = false; }
+    bgmAudio.addEventListener('loadedmetadata', bgmReveal);
+    bgmAudio.addEventListener('canplay', bgmReveal);
+    bgmAudio.addEventListener('error', function () {
+      bgmEl.hidden = true;
+      if (window.console) console.warn('背景音乐未加载：把 music.mp3 放到站点根目录即可。');
+    });
+    if (bgmAudio.readyState >= 1) bgmReveal();
+
+    // 点按钮展开 / 收起面板（刚拖动过就不算点击）
+    bgmBtn.addEventListener('click', function () {
+      if (dragMoved) return;
+      var open = bgmEl.classList.toggle('open');
+      bgmBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    // 播放 / 暂停
+    bgmTog.addEventListener('click', function () {
+      if (bgmAudio.paused) bgmPlay(); else bgmPause();
+    });
+
+    // 音量
+    bgmVol.addEventListener('input', function () {
+      var v = parseInt(bgmVol.value, 10) || 0;
+      bgmAudio.volume = Math.max(0, Math.min(1, v / 100));
+      bgmPref.vol = v;
+      bgmSave();
+    });
+
+    // 拖动：pointer 事件，鼠标与触屏通用
+    bgmBtn.addEventListener('pointerdown', function (e) {
+      dragging = true; dragMoved = false;
+      var r = bgmEl.getBoundingClientRect();
+      sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
+      bgmEl.classList.add('dragging');
+      try { bgmBtn.setPointerCapture(e.pointerId); } catch (err) { /* 老浏览器忽略 */ }
+      e.preventDefault();
+    });
+    bgmBtn.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!dragMoved && Math.abs(dx) + Math.abs(dy) > 4) dragMoved = true;
+      if (!dragMoved) return;
+      var nx = Math.max(4, Math.min(window.innerWidth - 58, ox + dx));
+      var ny = Math.max(4, Math.min(window.innerHeight - 58, oy + dy));
+      bgmEl.style.left = nx + 'px';
+      bgmEl.style.top = ny + 'px';
+      bgmEl.style.bottom = 'auto';
+      bgmPref.x = Math.round(nx);
+      bgmPref.y = Math.round(ny);
+    });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      bgmEl.classList.remove('dragging');
+      if (dragMoved) bgmSave();
+      setTimeout(function () { dragMoved = false; }, 0);
+    }
+    bgmBtn.addEventListener('pointerup', endDrag);
+    bgmBtn.addEventListener('pointercancel', endDrag);
+
+    // 窗口变小后别把控件留在屏幕外
+    window.addEventListener('resize', function () {
+      if (!bgmEl.style.top) return;
+      var r = bgmEl.getBoundingClientRect();
+      bgmEl.style.left = Math.max(4, Math.min(r.left, window.innerWidth - 58)) + 'px';
+      bgmEl.style.top = Math.max(4, Math.min(r.top, window.innerHeight - 58)) + 'px';
+    });
+
+    // 供「进入」流程调用：用户手动关过就不再自动播
+    window.__bgmStart = function () {
+      if (bgmPref.on === false) return;
+      bgmPlay();
+    };
+  }
+
+  /* ------------------------------------------------------------
+     ⑦ 年份 & 首屏初始化
      ------------------------------------------------------------ */
   var yearEl = $('#year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());

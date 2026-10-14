@@ -387,17 +387,17 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 .hero-greet{font-size:16px;letter-spacing:.3em;color:var(--ink-mute);margin-bottom:18px}
 
 /* 首屏头像：放在「你好，我是」和学号之间 */
-.hero-avatar-wrap{position:relative;width:112px;height:112px;margin:0 auto 22px}
+.hero-avatar-wrap{position:relative;width:140px;height:140px;margin:0 auto 22px}
 .hero-avatar-wrap::before{
-  content:"";position:absolute;inset:-20px;border-radius:50%;
+  content:"";position:absolute;inset:-22px;border-radius:50%;
   background:radial-gradient(circle,rgba(94,234,212,.30) 0%,rgba(94,234,212,0) 70%);
   animation:avPulse 5.5s ease-in-out infinite;
 }
 .hero-avatar{
   position:relative;display:block;
-  width:112px;height:112px;border-radius:50%;object-fit:cover;
+  width:140px;height:140px;border-radius:50%;object-fit:cover;
   border:2px solid rgba(94,234,212,.42);
-  box-shadow:0 0 0 6px rgba(94,234,212,.07),0 16px 40px rgba(0,0,0,.55);
+  box-shadow:0 0 0 7px rgba(94,234,212,.07),0 18px 46px rgba(0,0,0,.55);
 }
 @keyframes avPulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
 
@@ -548,10 +548,11 @@ main{
    通过 @property 注册 --flow，让锥形渐变的角度可以参与动画；
    再用 mask 把渐变裁进 1px 的边框区域，
    所以卡片自己的玻璃底色完全不受影响。
+   作用范围 = 所有「鼠标悬停会上浮」的块（.card 悬停上浮 4px，.stat 同款）。
    不支持 @property 的浏览器只会看不到这条光，卡片本身照常显示。 */
 @property --flow{syntax:"<angle>";inherits:false;initial-value:0deg}
 
-.mini::before,
+.card::before,
 .stat::before{
   content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
   padding:1px;
@@ -568,6 +569,10 @@ main{
           mask-composite:exclude;
   animation:flowSpin 8s linear infinite;
 }
+/* 错开起始相位，避免几十张卡片的光同时到达同一个位置（既好看也更省 */
+.card:nth-child(2n)::before{animation-delay:-2.7s}
+.card:nth-child(3n)::before{animation-delay:-5.2s}
+.card:nth-child(5n)::before{animation-delay:-6.6s}
 @keyframes flowSpin{to{--flow:360deg}}
 
 /* 网格 */
@@ -592,6 +597,16 @@ main{
   border:2px solid rgba(94,234,212,.34);
   background:linear-gradient(135deg,var(--acc),var(--acc-2));
   box-shadow:0 0 0 4px rgba(94,234,212,.07),0 8px 24px rgba(0,0,0,.5);
+}
+
+/* 头像双色调
+   原图是黑白漫画，直接放进深色科技主题会有"气质割裂"。
+   sepia 先建立单色基准 → hue-rotate 把它转到青蓝 → saturate 加强色度，
+   于是头发与线条仍是深色，浅色部分变成淡青，和整站配色统一。
+   只改变颜色倾向，不改图形本身。 */
+.avatar,
+.hero-avatar{
+  filter:sepia(.9) hue-rotate(158deg) saturate(1.55) brightness(1.06) contrast(1.03);
 }
 .profile-name{font-size:17px;font-weight:700;font-family:var(--mono);letter-spacing:.04em}
 .profile-sub{margin-top:2px;font-size:12.5px;color:var(--ink-mute);letter-spacing:.1em}
@@ -758,7 +773,7 @@ main{
   .nav-links a:not(.nav-cta){display:none}
   .nav{padding:12px 18px}
   .hero{padding:104px 18px 80px}
-  .hero-avatar-wrap,.hero-avatar{width:88px;height:88px}
+  .hero-avatar-wrap,.hero-avatar{width:106px;height:106px}
   .hero-avatar-wrap{margin-bottom:16px}
   .hero-greet{margin-bottom:14px}
   .grid-3,.grid-4{grid-template-columns:1fr}

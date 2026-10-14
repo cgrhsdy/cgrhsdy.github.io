@@ -1,5 +1,5 @@
 /* ============================================================
-   2603130114 · 个人主页样式
+   初阳零三 · 个人主页样式
    深色科技风 · 零外部依赖（无 CDN / 无网络字体 / 无图片文件）
    背景全部由 CSS 与内联 SVG 生成
    ============================================================ */
@@ -403,10 +403,13 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 @keyframes avPulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
 
-/* 名字：暗金渐变 + 字外一圈流动的光
-   做法：把同一段文字在 ::before 里再画一遍，用锥形渐变裁进字形，再整体模糊。
-   模糊会把字形边界向外晕开，形成「一圈光」；锥形渐变的角度由 --flow 驱动，
-   所以这圈光是绕着字流动的。isolation + z-index:-1 让光环待在文字底下，不糊住字。 */
+/* 名字：暗金渐变 + 绕字流动的一道光
+   做法：把同一段文字在 ::before 里再画一遍，用锥形渐变裁进字形。
+   关键是「只放大一点点」——1.07 倍，于是这层字比真字大出一圈很窄的边，
+   被真字挡住中间后，露出来的就只有贴着笔画轮廓的细细一道光。
+   锥形渐变里亮的只有 60° 左右的一小段，所以是一束光在绕着字走，
+   不是一团糊开的辉光。缩放用 translateX(-50%) 定位在文字中心，
+   保证放大的方向和真字同心，不会错位。 */
 .hero-name,.entry-id{
   position:relative;isolation:isolate;
   background:linear-gradient(100deg,#5c440f 0%,#9c7d24 20%,#c8a94f 36%,
@@ -418,19 +421,19 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 }
 .hero-name::before,.entry-id::before{
   content:attr(data-text);
-  position:absolute;left:0;right:0;top:0;z-index:-1;
+  position:absolute;top:0;left:50%;
+  transform:translateX(-50%) scale(1.07);
+  white-space:nowrap;z-index:-1;
   background:conic-gradient(from var(--flow),
-    rgba(214,186,110,.85)   0deg,
-    rgba(140,110,34,.08)   70deg,
-    rgba(214,186,110,.85)  140deg,
-    rgba(140,110,34,.08)  210deg,
-    rgba(214,186,110,.85)  280deg,
-    rgba(140,110,34,.08)  340deg,
-    rgba(214,186,110,.85)  360deg);
+    rgba(255,244,205,0)    0deg,
+    rgba(255,244,205,0)  290deg,
+    rgba(255,238,180,.85) 332deg,
+    rgba(255,255,242,1)   350deg,
+    rgba(255,238,180,.85) 360deg);
   -webkit-background-clip:text;background-clip:text;
   color:transparent;-webkit-text-fill-color:transparent;
-  filter:blur(9px);
-  animation:flowSpin 5s linear infinite;
+  filter:blur(1.5px);
+  animation:flowSpin 4.5s linear infinite;
 }
 
 .hero-name{
@@ -438,7 +441,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
      正好落在你要的「五分之三到一半之间」，换屏幕也不会跑偏 */
   font-size:calc(var(--avatar) * 0.55);
   font-weight:800;letter-spacing:.08em;line-height:1.05;
-  filter:drop-shadow(0 4px 30px rgba(160,126,32,.30));
+  filter:drop-shadow(0 2px 9px rgba(140,110,30,.35));
 }
 
 .hero-tag{margin-top:20px;font-size:15px;letter-spacing:.22em;color:var(--acc)}

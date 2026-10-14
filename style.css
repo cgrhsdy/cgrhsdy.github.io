@@ -641,26 +641,37 @@ main::after{
   100%{background-position:0px 0px,17.3px 0px,29.5px 0px,8px 0px}
 }
 
-/* ---------- 四角鎏金云纹 ----------
-   四个角各一朵「如意云头」螺旋 + 两条飘带 + 角上的细框线，金箔质感。
-   要点：
-   1) position:fixed —— 钉在视口四角，页面滚动时不动；
-   2) 只画一份图形，另外三个角用 rotate 转 90/180/270 度，四角绝对对称；
-   3) z-index:-1 让它待在 main 背景之上、正文之下，所以只会填空隙、不会压住文字；
-   4) 顶部导航是 z-index:60，仍在云纹之上，不会被挡。 */
+/* ---------- 双对角鎏金角花 ----------
+   左上用线描卷草（orn-tl.png），右下用剪影花叶（orn-br.png），两张都抠成透明底。
+   右下原图是深棕色剪影，直接放在深色页面上等于看不见，
+   所以它的像素已经在生成阶段整体染成对角金色渐变（左上亮金 -> 右下深金），
+   保留 alpha 不变 —— 也就是只有形状是原图的，颜色是我们自己的鎏金。
+   这里用 background-image 而不是 CSS mask：
+   实测在本项目的 file:// 预览环境下 mask-image 会被当成跨源图片而加载失败，
+   整块元素会被直接遮掉；background-image 没有这个问题，线上线上都稳。
+   position:fixed 钉在视口两对角，滚动不动；
+   z-index:-1 待在 main 背景之上、正文之下，只填空隙、不压字；
+   顶部导航 z-index:60，仍在角花之上，不会被挡。 */
 .corners{position:absolute;inset:0;pointer-events:none}
 .corner{
-  /* 小而精致：150px 一朵，线细，不抢视线 */
-  position:fixed;width:140px;height:140px;
+  position:fixed;width:200px;height:200px;
   z-index:-1;pointer-events:none;
-  opacity:.62;
-  filter:drop-shadow(0 0 8px rgba(214,178,86,.34));
+  opacity:.8;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  filter:drop-shadow(0 0 12px rgba(214,178,86,.36));
 }
-.corner svg{display:block;width:100%;height:100%}
-.corner:nth-child(1){top:0;left:0}
-.corner:nth-child(2){top:0;right:0;transform:rotate(90deg)}
-.corner:nth-child(3){bottom:0;right:0;transform:rotate(180deg)}
-.corner:nth-child(4){bottom:0;left:0;transform:rotate(270deg)}
+/* 两张图在文件里都是「直角顶点在右下」的形态（左上象限 0% 不透明），
+   所以贴右下角那张原样用，贴左上角那张必须转 180°，
+   花纹的直角顶点才会落在网页的角上、两条直边才贴着网页的两条边。 */
+.c-tl{top:0;left:0;
+  background-image:url(orn-tl.png);
+  transform:rotate(180deg);
+}
+.c-br{bottom:0;right:0;
+  background-image:url(orn-br.png);
+}
 
 .sec{
   width:min(100%,var(--maxw));

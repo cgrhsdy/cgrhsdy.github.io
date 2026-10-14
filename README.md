@@ -66,10 +66,10 @@ personal-page/
 
 ## 背景音乐出处
 
-- 曲目：**First Light Particles**（CC0 大气钢琴 / 氛围）
-- 来源：<https://opengameart.org/node/182244>
+- 曲目：**November Snow**（CC0 舒缓氛围）
+- 来源：<https://opengameart.org/content/november-snow>
 - 许可：**CC0（公共领域）** —— 可商用、无需署名、无版权风险
-- 本站使用 `music.m4a`（192 kbps AAC）：由原始 WAV 用 Windows 自带
+- 本站使用 `music.m4a`（128 kbps AAC）：由原始 WAV 用 Windows 自带
   `MediaTranscoder` 转码得到，未引入任何第三方工具
 
 ## 本地预览
